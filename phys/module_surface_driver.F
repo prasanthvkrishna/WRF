@@ -4,7 +4,8 @@ MODULE module_surface_driver
 CONTAINS
 
    SUBROUTINE surface_driver(                                         &
-     &           HYDRO_dt,sfcheadrt,INFXSRT,soldrain,                 &
+     &           HYDRO_dt,sfcheadrt,INFXSRT,soldrain,qtiledrain,      &
+     &           zwatble2d,                                           &
      &           acgrdflx,achfx,aclhf                                 &
      &          ,acsnom,acsnow,snowfallac,akhs,akms,albedo,br,canwat  &
      &          ,chklowq,dt,dx,dx2d,area2d,dz8w,dzs,glw               &
@@ -26,6 +27,7 @@ CONTAINS
      &          ,psim,p_phy,q10,q2,qfx,qsfc,qshltr,qz0                &
 #endif
      &          ,raincv,rho,sfcevp,sfcexc,sfcrunoff ,acrunoff         &
+     &          ,qtdrain, td_fraction                                 &
      &          ,smois,smstav,smstot,snoalb,snow,snowc,snowh,stepbl   &
      &          ,smcrel                                               &
      &          ,th10,th2,thz0,th_phy,tmn,tshltr,tsk,tslb             &
@@ -57,7 +59,7 @@ CONTAINS
      &          ,wsat_px, clay_px, csand_px, fmsand_px                              & ! PX-LSM
      &          ,idveg    ,iopt_crs  ,iopt_btr  ,iopt_run  ,iopt_sfc  ,iopt_frz     &
      &          ,iopt_inf ,iopt_rad  ,iopt_alb  ,iopt_snf  ,iopt_tbot ,iopt_stc     &
-     &          ,iopt_gla ,iopt_rsf  ,iopt_soil ,iopt_pedo ,iopt_crop               &
+     &          ,iopt_gla ,iopt_rsf  ,iopt_soil ,iopt_pedo ,iopt_crop ,iopt_tdrn    &
      &          ,soilcomp  , soilcl1, soilcl2, soilcl3, soilcl4                     &
      &          ,isnowxy  ,tvxy      ,tgxy      ,canicexy  ,canliqxy  ,eahxy        &
      &          ,tahxy    ,cmxy      ,chxy      ,fwetxy    ,sneqvoxy  ,alboldxy     &
@@ -638,7 +640,7 @@ CONTAINS
 
   !added by Wei Yu for WRF_HYDRO 
    real ::  HYDRO_dt
-   REAL, DIMENSION( ims:ime , jms:jme ):: sfcheadrt,INFXSRT, soldrain
+   REAL, DIMENSION( ims:ime , jms:jme ):: sfcheadrt,INFXSRT, soldrain, qtiledrain, zwatble2d
 
 #if (NMM_CORE==1)
    real , intent(IN )::   SFENTH
@@ -878,7 +880,7 @@ CONTAINS
 
    INTEGER, OPTIONAL, INTENT(IN) ::    idveg, iopt_crs, iopt_btr, iopt_run, iopt_sfc , iopt_frz, &
                                     iopt_inf, iopt_rad, iopt_alb, iopt_snf, iopt_tbot, iopt_stc, &
-				    iopt_gla, iopt_rsf, iopt_soil,iopt_pedo,iopt_crop
+				    iopt_gla, iopt_rsf, iopt_soil,iopt_pedo,iopt_crop, iopt_tdrn
    REAL,    OPTIONAL, DIMENSION(ims:ime ,8, jms:jme), INTENT(IN) :: SOILCOMP
    REAL,    OPTIONAL, DIMENSION(ims:ime , jms:jme)  , INTENT(IN) :: SOILCL1,SOILCL2,SOILCL3,SOILCL4
 
@@ -898,6 +900,9 @@ CONTAINS
    REAL,    OPTIONAL, DIMENSION(ims:ime , jms:jme), INTENT(IN) :: PLANTING
    REAL,    OPTIONAL, DIMENSION(ims:ime , jms:jme), INTENT(IN) :: HARVEST
    REAL,    OPTIONAL, DIMENSION(ims:ime , jms:jme), INTENT(IN) :: SEASON_GDD
+!-----Prasanth Valayamkunnath (08/2020)-------------------------
+   REAL,              DIMENSION( ims:ime, jms:jme ) , INTENT(IN)   ::   TD_FRACTION ! Tile fraction
+   REAL,              DIMENSION( ims:ime, jms:jme ) , INTENT(INOUT)::   QTDRAIN     ! Tile drainage
 
 !  NoahMP specific fields - runoff option 5
 
@@ -3078,7 +3083,7 @@ CONTAINS
                PLANTING,  HARVEST,SEASON_GDD,                               &
                   IDVEG, IOPT_CRS, IOPT_BTR, IOPT_RUN,  IOPT_SFC,   IOPT_FRZ, &
 	       IOPT_INF, IOPT_RAD, IOPT_ALB, IOPT_SNF, IOPT_TBOT,   IOPT_STC, &
-	       IOPT_GLA, IOPT_RSF, IOPT_SOIL,IOPT_PEDO,IOPT_CROP,             &
+	       IOPT_GLA, IOPT_RSF, IOPT_SOIL,IOPT_PEDO,IOPT_CROP,   IOPT_TDRN,&
                 IZ0TLND, SF_URBAN_PHYSICS,                                    &
 	       SOILCOMP,  SOILCL1,  SOILCL2,  SOILCL3,   SOILCL4,             &
 		  T_PHY,  QV_CURR,    U_PHY,    V_PHY,    SWDOWN,        GLW, &
@@ -3095,6 +3100,7 @@ CONTAINS
 		 WOODXY, STBLCPXY, FASTCPXY,      LAI,    XSAIXY,    TAUSSXY, &
 	        SMOISEQ, SMCWTDXY,DEEPRECHXY,  RECHXY,   GRAINXY,      GDDXY,PGSXY, & ! IN/OUT Noah MP only
                GECROS_STATE,                                                  & ! IN/OUT gecros model
+               QTDRAIN,   TD_FRACTION,                                        & ! IN/OUT tile drainage
 	         T2MVXY,   T2MBXY,   Q2MVXY,   Q2MBXY,                        &
                  TRADXY,    NEEXY,    GPPXY,    NPPXY,    FVEGXY,    RUNSFXY, &
 	        RUNSBXY,   ECANXY,   EDIRXY,  ETRANXY,     FSAXY,     FIRAXY, &
@@ -3104,7 +3110,7 @@ CONTAINS
 		  GHBXY,    IRGXY,    IRCXY,    IRBXY,      TRXY,      EVCXY, &
 	       CHLEAFXY,   CHUCXY,   CHV2XY,   CHB2XY,    RS,                 &
 #ifdef WRF_HYDRO
-                 sfcheadrt,INFXSRT,soldrain,                          &    !O
+                 sfcheadrt,INFXSRT,soldrain,qtiledrain,zwatble2d,             &    !O
 #endif
                 ids,ide, jds,jde, kds,kde,                      &
                 ims,ime, jms,jme, kms,kme,                      &

@@ -118,7 +118,8 @@ CONTAINS
                          WSLAKEXY, ZWTXY, WAXY, WTXY, LFMASSXY, RTMASSXY, & ! Optional Noah-MP
                          STMASSXY, WOODXY, STBLCPXY, FASTCPXY,            & ! Optional Noah-MP
                          GRAINXY, GDDXY,                                  & ! Optional Noah-MP
-                         croptype, cropcat,                      &           ! Noah-MP Crop model
+                         qtdrain,                                         & ! Noah-MP Tile drainage
+                         croptype, cropcat,                               & ! Noah-MP Crop model
                          iopt_crop,                                       &  
                          gecros_state,                                    & ! Optional gecros crop
                          XSAIXY, LAI,                                     & ! Optional Noah-MP
@@ -541,7 +542,7 @@ CONTAINS
    REAL,    OPTIONAL, DIMENSION(ims:ime,5,jms:jme), INTENT(IN ) :: CROPTYPE
    INTEGER, INTENT(IN ) :: iopt_crop
    REAL,    OPTIONAL, DIMENSION(ims:ime,60,jms:jme) :: gecros_state      ! Optional gecros crop
-
+   REAL,              DIMENSION(ims:ime,jms:jme), INTENT(IN )   :: qtdrain
 !   REAL, DIMENSION( ims:ime, kms:kme, jms:jme ),  OPTIONAL,  INTENT(INOUT ) ::   qnn_curr
 
    INTEGER , OPTIONAL,  INTENT(OUT) :: STEPWTD
@@ -1347,6 +1348,7 @@ CONTAINS
                 CHXY, FWETXY, SNEQVOXY, ALBOLDXY, QSNOWXY,      &
                 WSLAKEXY, ZWTXY, WAXY, WTXY, LFMASSXY, RTMASSXY,&
                 STMASSXY, WOODXY, STBLCPXY, FASTCPXY,           &
+                QTDRAIN,                                        & ! Noah-MP Tile drainage
                 GRAINXY, GDDXY,                                 & ! Noah-MP Crop model
                 croptype, cropcat,                              & ! Noah-MP Crop model
                 iopt_crop,                                      & 
@@ -2354,6 +2356,7 @@ CONTAINS
                 CHXY, FWETXY, SNEQVOXY, ALBOLDXY, QSNOWXY,      &
                 WSLAKEXY, ZWTXY, WAXY, WTXY, LFMASSXY, RTMASSXY,&
                 STMASSXY, WOODXY, STBLCPXY, FASTCPXY,           &
+                QTDRAIN,                                        &
                 GRAINXY, GDDXY,                                 & ! Noah-MP Crop model
                 croptype, cropcat,                              & ! Noah-MP Crop model
                 iopt_crop,                                      &
@@ -2652,6 +2655,7 @@ CONTAINS
    REAL,    OPTIONAL, DIMENSION(ims:ime,jms:jme) :: WOODXY
    REAL,    OPTIONAL, DIMENSION(ims:ime,jms:jme) :: GRAINXY
    REAL,    OPTIONAL, DIMENSION(ims:ime,jms:jme) :: GDDXY
+   REAL,    OPTIONAL, DIMENSION(ims:ime,jms:jme) :: QTDRAIN 
    REAL,    OPTIONAL, DIMENSION(ims:ime,jms:jme) :: STBLCPXY
    REAL,    OPTIONAL, DIMENSION(ims:ime,jms:jme) :: FASTCPXY
    REAL,    OPTIONAL, DIMENSION(ims:ime,jms:jme) :: XSAIXY
@@ -3190,7 +3194,7 @@ CALL lsm_mosaic_init(IVGTYP,config_flags%ISWATER,config_flags%ISURBAN,config_fla
                      ims,ime, jms,jme, kms,kme,                &
                      its,ite, jts,jte, kts,kte                 &
 #if (EM_CORE == 1)
-                     ,smoiseq  ,smcwtdxy ,rechxy   ,deeprechxy, areaxy ,dx, dy, msftx, msfty,&
+                     ,smoiseq  ,smcwtdxy ,rechxy   ,deeprechxy, qtdrain, areaxy ,dx, dy, msftx, msfty,&
                      wtddt    ,stepwtd  ,dt  ,qrfsxy ,qspringsxy  ,qslatxy,                  &
                      fdepthxy ,ht       ,riverbedxy ,eqzwt ,rivercondxy ,pexpxy,              &
                      rechclim,                  &

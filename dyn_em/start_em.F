@@ -1105,6 +1105,7 @@ endif
                       grid%WSLAKEXY, grid%ZWTXY, grid%WAXY, grid%WTXY, grid%LFMASSXY, grid%RTMASSXY, & ! Optional Noah-MP
                       grid%STMASSXY, grid%WOODXY, grid%STBLCPXY, grid%FASTCPXY,                 &   ! Optional Noah-MP
                       grid%GRAINXY, grid%GDDXY,                                                 &   ! Optional Noah-MP
+                      grid%QTDRAIN,                                                             &
                       grid%CROPTYPE, grid%CROPCAT,                                                 &   ! Optional Noah-MP
                       config_flags%opt_crop,                                                    &
                       grid%gecros_state,                                                        &   ! Optional gecros crop

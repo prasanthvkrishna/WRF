@@ -482,6 +482,7 @@ BENCH_START(surf_driver_tim)
       CALL surface_driver(                                                &
      &        HYDRO_dt=HYDRO_dt,  sfcheadrt=grid%sfcheadrt,               &
      &        INFXSRT=grid%INFXSRT,  soldrain=grid%soldrain,              &
+     &        QTILEDRAIN=grid%qtiledrain, ZWATBLE2D=grid%zwatble2d,       & 
      &         ACGRDFLX=grid%acgrdflx  ,ACHFX=grid%achfx        ,ACLHF=grid%aclhf        &
      &        ,ACSNOM=grid%acsnom      ,ACSNOW=grid%acsnow      ,AKHS=grid%akhs          &
      &        ,AKMS=grid%akms          ,ALBBCK=grid%albbck      ,ALBEDO=grid%albedo      &
@@ -524,6 +525,7 @@ BENCH_START(surf_driver_tim)
      &        ,RA_LW_PHYSICS=config_flags%ra_lw_physics         ,RHO=grid%rho            &
      &        ,RMOL=grid%rmol          ,SFCEVP=grid%sfcevp      ,SFCEXC=grid%sfcexc      &
      &        ,SFCRUNOFF=grid%sfcrunoff,ACRUNOFF=grid%ACRUNOFF                           &
+     &        ,QTDRAIN=grid%qtdrain, TD_FRACTION=grid%td_fraction                        &
      &        ,opt_thcnd=config_flags%opt_thcnd                                          &
      &        ,SF_SFCLAY_PHYSICS=config_flags%sf_sfclay_physics                        &
      &        ,BL_PBL_PHYSICS=config_flags%bl_pbl_physics                              &
@@ -779,7 +781,7 @@ BENCH_START(surf_driver_tim)
      &        ,iopt_tbot=config_flags%opt_tbot, iopt_stc=config_flags%opt_stc & 
      &        ,iopt_gla=config_flags%opt_gla,   iopt_rsf=config_flags%opt_rsf & 
      &        ,iopt_soil=config_flags%opt_soil, iopt_pedo=config_flags%opt_pedo &
-     &        ,iopt_crop=config_flags%opt_crop                                       &
+     &        ,iopt_crop=config_flags%opt_crop, iopt_tdrn=config_flags%opt_tdrn &
      &        , isnowxy=grid%isnowxy  ,    tvxy=grid%tvxy    ,    tgxy=grid%tgxy     &
      &        ,canicexy=grid%canicexy ,canliqxy=grid%canliqxy,   eahxy=grid%eahxy    &
      &        ,   tahxy=grid%tahxy    ,    cmxy=grid%cmxy    ,    chxy=grid%chxy     &
