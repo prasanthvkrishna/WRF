@@ -120,7 +120,7 @@ CONTAINS
                          GRAINXY, GDDXY,                                  & ! Optional Noah-MP
                          qtdrain,                                         & ! Noah-MP Tile drainage
                          croptype, cropcat,                               & ! Noah-MP Crop model
-                         iopt_crop,                                       &  
+                         iopt_crop, iopt_tdrn,                            &  
                          gecros_state,                                    & ! Optional gecros crop
                          XSAIXY, LAI,                                     & ! Optional Noah-MP
                          T2MVXY, T2MBXY, CHSTARXY ,                       & ! Optional Noah-MP
