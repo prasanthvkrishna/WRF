@@ -1104,6 +1104,7 @@ rconfig   integer opt_rsf     namelist,noah_mp      1            1         h    
 rconfig   integer opt_soil    namelist,noah_mp      1            1         h    "opt_soil" "flag for using different input soil information"   ""
 rconfig   integer opt_pedo    namelist,noah_mp      1            1         h    "opt_pedo" "pedo_transfer function option"   ""
 rconfig   integer opt_crop    namelist,noah_mp      1            0         h    "opt_crop" "crop model option"   ""
+rconfig   integer opt_tdrn    namelist,noah_mp      1            0         h    "opt_tdrn" "tile drainage option"   ""
 
 # For WRF Hydro
 rconfig   integer wrf_hydro               derived              1     0      h     "wrf_hydro"   "descrip"  "unit"

@@ -2198,7 +2198,7 @@
      &                T2MVXY=grid%T2MVXY, T2MBXY=grid%T2MBXY, CHSTARXY=grid%CHSTARXY,    & ! Optional Noah-MP
      &                smoiseq=grid%smoiseq, smcwtdxy=grid%smcwtdxy, rechxy=grid%rechxy,   &
      &                deeprechxy=grid%deeprechxy,                                         &
-     &                iopt_crop=config_flags%opt_crop,                                                    &
+     &                iopt_crop=config_flags%opt_crop,iopt_tdrn=config_flags%opt_tdrn,                       &
      &                gecros_state=grid%gecros_state,                                                        &   ! Optional gecros crop
      &                lakedepth2d=grid%lakedepth2d,  savedtke12d=grid%savedtke12d,  snowdp2d=grid%snowdp2d,   h2osno2d=grid%h2osno2d,               & !lake
      &                snl2d= grid%snl2d, t_grnd2d=grid%t_grnd2d, t_lake3d=grid%t_lake3d, lake_icefrac3d=grid%lake_icefrac3d,                        & !lake
